@@ -53,18 +53,30 @@ def create_user(user: UserSchema, session: Session):
 
 
 @router.get('/', response_model=UserList)
-def read_users(session: Session, skip: int = 0, limit: int = 100):
+def read_users(
+    session: Session,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+):
+    if current_user.admin != 1:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
+        )
+
     users = session.scalars(select(User).offset(skip).limit(limit)).all()
     return {'users': users}
 
 
 @router.get('/{user_id}', response_model=UserPublic)
-def read_user(user_id: int, session: Session):
-    db_user = session.scalar(select(User).where(User.id == user_id))
-    if not db_user:
+def read_user(user_id: int, session: Session, current_user: CurrentUser):
+    if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
         )
+
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
     return db_user
 
 

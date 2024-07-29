@@ -67,10 +67,38 @@ def other_user(session):
 
 
 @pytest.fixture
+def admin_user(session):
+    password = 'testtest'
+    user = UserFactory(password=get_password_hash(password), admin=True)
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    user.clean_password = 'testtest'
+
+    return user
+
+
+@pytest.fixture
 def token(client, user):
     response = client.post(
         '/auth/token',
         data={'username': user.email, 'password': user.clean_password},
+    )
+    token = response.json()['access_token']
+    client.headers.update({'Authorization': f'Bearer {token}'})
+    return token
+
+
+@pytest.fixture
+def admin_token(client, admin_user):
+    response = client.post(
+        '/auth/token',
+        data={
+            'username': admin_user.email,
+            'password': admin_user.clean_password,
+        },
     )
     token = response.json()['access_token']
     client.headers.update({'Authorization': f'Bearer {token}'})

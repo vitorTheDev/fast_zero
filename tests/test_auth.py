@@ -76,6 +76,7 @@ def test_token_expired_dont_refresh(client, user):
     with freeze_time('2023-07-14 12:00:00'):
         response = client.post(
             '/auth/token',
+            headers={},
             data={'username': user.email, 'password': user.clean_password},
         )
         assert response.status_code == HTTPStatus.OK

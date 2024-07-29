@@ -46,26 +46,40 @@ def test_create_user_already_exists_email(client, user):
     assert response.json() == {'detail': 'Email already exists'}
 
 
-def test_read_users(client):
+def test_read_users_not_auth(client):
+    response = client.get('/users/')
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {'detail': 'Not authenticated'}
+
+
+def test_read_users_not_admin(client, token):
+    response = client.get('/users/')
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Not enough permissions'}
+
+
+def test_read_users(client, admin_token, admin_user):
+    user_schema = UserPublic.model_validate(admin_user).model_dump()
     response = client.get('/users/')
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'users': []}
-
-
-def test_read_users_with_users(client, user):
-    user_schema = UserPublic.model_validate(user).model_dump()
-    response = client.get('/users/')
     assert response.json() == {'users': [user_schema]}
 
 
-def test_read_user_not_found(client):
-    response = client.get('/users/1/')
-    assert response.status_code == HTTPStatus.NOT_FOUND
+def test_read_user_not_auth(client, user):
+    response = client.get(f'/users/{user.id}')
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {'detail': 'Not authenticated'}
 
 
-def test_read_user(client, user):
+def test_read_user_wrong_user(client, other_user, token):
+    response = client.get(f'/users/{other_user.id}')
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Not enough permissions'}
+
+
+def test_read_user(client, user, token):
     user_schema = UserPublic.model_validate(user).model_dump()
-    response = client.get('/users/1/')
+    response = client.get(f'/users/{user.id}/')
     assert response.json() == user_schema
 
 
