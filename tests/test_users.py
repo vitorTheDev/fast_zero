@@ -24,8 +24,8 @@ def test_create_user_already_exists_username(client, user):
     response = client.post(
         '/users/',
         json={
-            'username': 'Teste',
-            'email': 'teste2@test.com',
+            'username': user.username,
+            'email': 'wrongemail@test.com',
             'password': 'testtest',
         },
     )
@@ -37,8 +37,8 @@ def test_create_user_already_exists_email(client, user):
     response = client.post(
         '/users/',
         json={
-            'username': 'Teste2',
-            'email': 'teste@test.com',
+            'username': 'wrongusername',
+            'email': user.email,
             'password': 'testtest',
         },
     )
@@ -86,9 +86,10 @@ def test_update_user(client, user, token):
     }
 
 
-def test_update_user_forbidden(client, token):
+def test_update_user_with_wrong_user(client, other_user, token):
     response = client.put(
-        '/users/99',
+        f'/users/{other_user.id}',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'bob',
             'email': 'bob@example.com',
@@ -96,6 +97,7 @@ def test_update_user_forbidden(client, token):
         },
     )
     assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Not enough permissions'}
 
 
 def test_delete_user_not_found(client, token):
