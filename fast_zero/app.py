@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import FastAPI
 
 from fast_zero.routers import auth, users
-from fast_zero.schemas import Message
+from fast_zero.schemas.message_schema import Message
 
 app = FastAPI()
 

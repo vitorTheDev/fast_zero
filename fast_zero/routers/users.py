@@ -6,8 +6,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from fast_zero.database import get_session
-from fast_zero.models import User
-from fast_zero.schemas import Message, UserList, UserPublic, UserSchema
+from fast_zero.models.user_model import User
+from fast_zero.schemas.message_schema import Message
+from fast_zero.schemas.user_schema import UserList, UserPublic, UserSchema
 from fast_zero.security import (
     get_current_user,
     get_password_hash,

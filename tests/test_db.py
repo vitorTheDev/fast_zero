@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from fast_zero.database import get_session
-from fast_zero.models import User
+from fast_zero.models.user_model import User
 
 
 def test_get_session():

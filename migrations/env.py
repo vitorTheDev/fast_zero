@@ -6,7 +6,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from fast_zero.models import table_registry
+from fast_zero.models.user_model import table_registry
 from fast_zero.settings import Settings
 
 config = context.config

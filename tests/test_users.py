@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fast_zero.schemas import UserPublic
+from fast_zero.schemas.user_schema import UserPublic
 
 
 def test_create_user(client):
