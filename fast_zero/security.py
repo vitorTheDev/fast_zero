@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from zoneinfo import ZoneInfo
 
 from fast_zero.database import get_session
-from fast_zero.models.user_model import User
+from fast_zero.models.models import User
 from fast_zero.schemas.token_schema import TokenData
 from fast_zero.settings import Settings
 
