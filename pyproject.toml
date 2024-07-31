@@ -17,6 +17,7 @@ pwdlib = {extras = ["argon2"], version = "^0.2.0"}
 python-multipart = "^0.0.9"
 pytz = "^2024.1"
 tzdata = "^2024.1"
+psycopg = {extras = ["binary"], version = "^3.2.1"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.1"
@@ -26,6 +27,7 @@ ruff = "^0.5.4"
 httpx = "^0.27.0"
 factory-boy = "^3.3.0"
 freezegun = "^1.5.1"
+testcontainers = "^4.7.2"
 
 [tool.taskipy.tasks]
 lint = 'ruff check . && ruff check . --diff'
@@ -34,6 +36,21 @@ run = 'fastapi dev fast_zero/app.py'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=fast_zero -vv'
 post_test = 'coverage html'
+docker_build = 'docker rm fastzeroapp || docker build -t "fast_zero" .'
+docker_run_it = 'docker run -it --name fastzeroapp -p 8000:8000 fast_zero:latest'
+docker_run = 'docker run -d --name fastzeroapp -p 8000:8000 fast_zero:latest'
+docker_migrations = 'docker exec -it fastzeroapp poetry run alembic upgrade head'
+docker_stop = 'docker stop fastzeroapp'
+postgres_run = """docker run -d \
+    --name app_database \
+    -e POSTGRES_USER=app_user \
+    -e POSTGRES_DB=app_db \
+    -e POSTGRES_PASSWORD=app_password \
+    -v pgdata:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    postgres"""
+postgres_stop = 'docker stop app_database'
+
 
 [tool.ruff]
 line-length = 79

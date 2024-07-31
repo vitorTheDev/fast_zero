@@ -1,7 +1,7 @@
 """users table
 
 Revision ID: e9824f9174d5
-Revises: 
+Revises:
 Create Date: 2024-07-29 19:44:51.555568
 
 """
@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
-    sa.Column('admin', sa.Integer(), server_default='FALSE', nullable=False),
+    sa.Column('admin', sa.Integer(), server_default='0', nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
